@@ -76,8 +76,21 @@ class Article < Content
     self.permalink = self.title.to_permalink if self.permalink.nil? or self.permalink.empty?
   end
 
+  def merge_with(article_id)
+    article = Article.find_by_id(article_id)
+    if article
+      merged_article = self.clone
+      merged_article.guid = nil
+      merged_article.body = article.body + body
+      merged_article.save
+    end
+  end
   def has_child?
     Article.exists?({:parent_id => self.id})
+  end
+
+  def merge
+
   end
 
   attr_accessor :draft, :keywords
